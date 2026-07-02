@@ -9,7 +9,7 @@ Enchaîne les 3 étapes et génère un rapport final (console + fichier report.m
 import datetime
 
 from db import connection_report, MONGO_URI, DB_NAME
-from import_csv_python  import import_all_csv, CSV_DIR
+from import_csv_python import import_all_csv, CSV_DIR
 from join_collections import build_joined_collection
 
 
@@ -43,6 +43,16 @@ def write_report(conn_report: dict, import_report: list, join_report: dict, path
 
     # 3. Jointure
     lines.append("## 3. Jointure des collections")
+
+    idx_report = join_report.get("index_report", [])
+    if idx_report:
+        lines.append("### Index créés avant jointure")
+        lines.append("| Collection | Champ | Statut | Durée (s) |")
+        lines.append("|---|---|---|---|")
+        for idx in idx_report:
+            lines.append(f"| {idx['collection']} | {idx['champ']} | {idx['status']} | {idx.get('duration_s', '-')} |")
+        lines.append("")
+
     lines.append(f"- Collection pivot : `{join_report['collection_pivot']}`")
     lines.append(f"- Collection résultat : `{join_report['collection_sortie']}`")
     lines.append(f"- Collections jointes : {', '.join(join_report['collections_jointes']) or 'aucune'}")
@@ -56,7 +66,7 @@ def write_report(conn_report: dict, import_report: list, join_report: dict, path
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
-    print(f"\n📄 Rapport écrit dans {path}")
+    print(f"\n Rapport écrit dans {path}")
     return content
 
 
@@ -64,7 +74,7 @@ def main():
     print("=== ÉTAPE 1/3 : Connexion MongoDB ===")
     conn_report = connection_report()
     if conn_report["status"] != "OK":
-        print("❌ Arrêt : impossible de continuer sans connexion MongoDB.")
+        print(" Arrêt : impossible de continuer sans connexion MongoDB.")
         return
 
     print("\n=== ÉTAPE 2/3 : Import des CSV ===")

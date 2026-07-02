@@ -3,8 +3,6 @@ import_csv_python.py
 Alternative à import_csv.py qui n'a besoin d'aucun outil externe
 (pas de mongoimport) : lecture des CSV avec pandas, insertion par lots
 dans MongoDB avec pymongo.
-
-Utile si l'installation de mongodb-database-tools pose problème (Windows).
 """
 
 import glob
@@ -25,10 +23,10 @@ def import_all_csv(csv_dir: str = CSV_DIR, uri: str = MONGO_URI, db_name: str = 
 
     csv_files = sorted(glob.glob(os.path.join(csv_dir, "*.csv")))
     if not csv_files:
-        print(f" Aucun fichier CSV trouvé dans '{csv_dir}'")
+        print(f"Aucun fichier CSV trouvé dans '{csv_dir}'")
         return report
 
-    print(f" {len(csv_files)} fichier(s) CSV détecté(s) dans '{csv_dir}'\n")
+    print(f"{len(csv_files)} fichier(s) CSV détecté(s) dans '{csv_dir}'\n")
 
     for csv_path in csv_files:
         collection_name = os.path.splitext(os.path.basename(csv_path))[0].lower()
@@ -53,7 +51,7 @@ def import_all_csv(csv_dir: str = CSV_DIR, uri: str = MONGO_URI, db_name: str = 
         duration = time.time() - start
 
         if error:
-            print(f" [{collection_name}] erreur : {error}")
+            print(f"ERREUR [{collection_name}] : {error}")
             report.append({
                 "collection": collection_name,
                 "file": csv_path,
@@ -62,7 +60,7 @@ def import_all_csv(csv_dir: str = CSV_DIR, uri: str = MONGO_URI, db_name: str = 
                 "error": error,
             })
         else:
-            print(f" [{collection_name}] {total_rows} lignes importées en {duration:.1f}s")
+            print(f"OK [{collection_name}] {total_rows} lignes importées en {duration:.1f}s")
             report.append({
                 "collection": collection_name,
                 "file": csv_path,
