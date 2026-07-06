@@ -7,7 +7,7 @@ import time
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 
-MONGO_URI = "mongodb://localhost:27017"
+MONGO_URI = "mongodb://admin:password123@localhost:27017/"
 DB_NAME = "kbo_database"
 
 

@@ -94,7 +94,8 @@ def ensure_indexes(db, uri: str = MONGO_URI) -> list:
 
 
 def build_joined_collection(uri: str = MONGO_URI, db_name: str = DB_NAME) -> dict:
-    client = MongoClient(uri)
+    # socketTimeoutMS=None demande au script Python de patienter indéfiniment
+    client = MongoClient(uri, socketTimeoutMS=None)
     db = client[db_name]
 
     existing = db.list_collection_names()
